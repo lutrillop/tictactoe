@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "664320356188",
+    "firebase_url": "https://tictactoe-1fb9f.firebaseio.com",
+    "project_id": "tictactoe-1fb9f",
+    "storage_bucket": "tictactoe-1fb9f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664320356188:android:b398fa5ccca375b3b95b99",
+        "android_client_info": {
+          "package_name": "com.example.miprimeraapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664320356188-5opdgrmip6nmu1ner0sbmtdrbu6nr1t9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBraN5Wjxx3nJOpkzFYqM9lUIzQ6G7vn5A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "664320356188-5opdgrmip6nmu1ner0sbmtdrbu6nr1t9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
