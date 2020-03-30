@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void actualizaFireBase(){
         for (int i = 0; i < 16; i++){
-            DatabaseReference juegoRef = database.getReference("juego/" +  i.toString());
+            DatabaseReference juegoRef = database.getReference("juego/" +  i);
             juegoRef.setValue("X");
         }
     }
