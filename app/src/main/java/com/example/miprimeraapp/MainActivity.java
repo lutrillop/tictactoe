@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         roundCount++;
 
-//        actualizaFireBase();
 
         if(checkForWin()){
             if(player1Turn){
@@ -153,6 +152,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         };
 
+        if(field[0][3].equals(field[1][2])
+                && field[0][3].equals(field[2][1])
+                && !field[0][3].equals("")){
+            return true;
+        };
+
+        if(field[3][0].equals(field[1][2])
+                && field[3][0].equals(field[2][1])
+                && !field[3][0].equals("")){
+            return true;
+        };
+
 
         //cruzado derecho
         if(field[0][2].equals(field[1][1])
@@ -166,7 +177,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 && !field[3][0].equals("")){
             return true;
         };
-        //el error esta aqui
+
+
+
         if(field[0][1].equals(field[1][2])
                 && field[0][1].equals(field[2][3])
                 && !field[0][1].equals("")){
@@ -217,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void actualizaFireBase(){
         for (int i = 0; i < 16; i++){
             DatabaseReference juegoRef = database.getReference("juego/" +  i);
-            juegoRef.setValue("X");
+            juegoRef.setValue("");
         }
     }
 
