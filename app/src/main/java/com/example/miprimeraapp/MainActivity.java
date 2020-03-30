@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+//implementation 'com.google.firebase:firebase-database:19.1.0'
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        actualizaFireBase();
 
         textViewPlayer1=findViewById(R.id.text_view_p1);
         textViewPlayer2=findViewById(R.id.text_view_p2);
@@ -59,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         roundCount++;
+
+//        actualizaFireBase();
 
         if(checkForWin()){
             if(player1Turn){
@@ -182,6 +187,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         updatePointsText();
         resetBoard();
+    }
+
+    private void actualizaFireBase(){
+        for (int i = 0; i < 16; i++){
+            DatabaseReference juegoRef = database.getReference("juego/" +  i.toString());
+            juegoRef.setValue("X");
+        }
     }
 
     private void draw(){
