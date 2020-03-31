@@ -18,7 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-/// DATABASE
+    /// DATABASE
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("version");
 
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        actualizaFireBase();
+        defineFireBase();
 
         textViewPlayer1=findViewById(R.id.text_view_p1);
         textViewPlayer2=findViewById(R.id.text_view_p2);
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Float value = dataSnapshot.getValue(Float.class);
-                Toast.makeText(MainActivity.this,"Version: " + value.toString(),Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainActivity.this,"Version: " + value.toString(),Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -111,10 +111,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
+
+        for (int i = 0; i < 4; i++){
+            for (int j = 0; j < 4; j++){
+                DatabaseReference juegoRef = database.getReference("juego/" +  (i+(j*4)));
+                juegoRef.setValue(field[i][j]);
+            }
+        }
+
+
         for (int i = 0; i < 4; i++){
             if(field[i][0].equals(field[i][1])
-            && field[i][0].equals(field[i][2])
-            && !field[i][0].equals("")){
+                    && field[i][0].equals(field[i][2])
+                    && !field[i][0].equals("")){
                 return true;
             }
 
@@ -141,8 +150,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //cruzado izquierdo
         if(field[0][0].equals(field[1][1])
-            && field[0][0].equals(field[2][2])
-            && !field[0][0].equals("")){
+                && field[0][0].equals(field[2][2])
+                && !field[0][0].equals("")){
             return true;
         };
 
@@ -167,8 +176,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //cruzado derecho
         if(field[0][2].equals(field[1][1])
-               && field[0][2].equals(field[2][0])
-               && !field[0][2].equals("")){
+                && field[0][2].equals(field[2][0])
+                && !field[0][2].equals("")){
             return true;
         };
 
@@ -227,12 +236,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         resetBoard();
     }
 
-    private void actualizaFireBase(){
+    private void defineFireBase(){
+        DatabaseReference turno = database.getReference("/turno");
+        turno.setValue("");
+
         for (int i = 0; i < 16; i++){
             DatabaseReference juegoRef = database.getReference("juego/" +  i);
             juegoRef.setValue("");
         }
     }
+
 
     private void draw(){
         Toast.makeText(this, "Draw!", Toast.LENGTH_SHORT).show();
@@ -251,6 +264,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
+        for (int i = 0; i < 16; i++){
+            DatabaseReference juegoRef = database.getReference("juego/" +  i);
+            juegoRef.setValue("");
+        }
         roundCount=0;
         player1Turn = true;
     }
