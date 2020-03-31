@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     DatabaseReference myRef = database.getReference("version");
 
     DatabaseReference turno = database.getReference("/turno");
+    DatabaseReference P1score = database.getReference("/P1Score");
+    DatabaseReference P2score = database.getReference("/P2Score");
     private Button[][] buttons = new Button[4][4];
 
     private boolean player1Turn =true;
@@ -40,6 +42,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        player1Points = 0;
+        player2Points = 0;
+        P1score.setValue(player1Points);
+        P2score.setValue(player2Points);
         setContentView(R.layout.activity_main);
         defineFireBase();
         turno.addValueEventListener(new ValueEventListener() {
@@ -261,6 +267,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void player1Wins(){
         player1Points++;
         Toast.makeText(this, "Player 1 Wins!", Toast.LENGTH_SHORT).show();
+        P1score.setValue(player1Points);
         updatePointsText();
         resetBoard();
     }
@@ -268,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void player2Wins(){
         player2Points++;
         Toast.makeText(this, "Player 2 Wins!", Toast.LENGTH_SHORT).show();
-
+        P2score.setValue(player2Points);
         updatePointsText();
         resetBoard();
     }
@@ -301,9 +308,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         //reset firebase
-        for (int i = 0; i < 16; i++){
-            DatabaseReference juegoRef = database.getReference("juego/" +  i);
-            juegoRef.setValue("");
+        for (int i = 0; i < 4; i++){
+            for (int j = 0; j < 4; j++){
+                DatabaseReference juegoRef = database.getReference("juego/" +  i + "/" + j);
+                juegoRef.setValue("");
+            }
         }
         roundCount=0;
         turno.setValue(true);
@@ -312,6 +321,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void resetGame(){
         player1Points = 0;
         player2Points = 0;
+        P1score.setValue(player1Points);
+        P2score.setValue(player2Points);
+
         updatePointsText();
         resetBoard();
     }
