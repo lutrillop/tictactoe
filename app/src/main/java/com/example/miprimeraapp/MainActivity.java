@@ -3,6 +3,7 @@ package com.example.miprimeraapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("version");
 
+    DatabaseReference turno = database.getReference("/turno");
     private Button[][] buttons = new Button[4][4];
 
     private boolean player1Turn =true;
@@ -40,6 +42,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         defineFireBase();
+        turno.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Boolean value = dataSnapshot.getValue(Boolean.class);
+                if(value!=null){
+                    MainActivity.this.player1Turn = value;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         textViewPlayer1=findViewById(R.id.text_view_p1);
         textViewPlayer2=findViewById(R.id.text_view_p2);
@@ -50,6 +66,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int resID =getResources().getIdentifier(buttonID, "id", getPackageName());
                 buttons[i][j] = findViewById(resID);
                 buttons[i][j].setOnClickListener(this);
+                DatabaseReference juegoRef = database.getReference("juego/" +  i + "/" + j);
+                juegoRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String value=dataSnapshot.getValue(String.class);
+                        if (value!=null){
+                            int i = Integer.parseInt(dataSnapshot.getRef().getKey());
+                            int j = Integer.parseInt(dataSnapshot.getRef().getParent().getKey());
+                            Log.e("i", "i: "+ i);
+                            Log.e("j", "j: "+ j);
+                            MainActivity.this.buttons[j][i].setText(value);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         }
 
@@ -64,7 +99,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Float value = dataSnapshot.getValue(Float.class);
-//                Toast.makeText(MainActivity.this,"Version: " + value.toString(),Toast.LENGTH_LONG).show();
+                if(value!=null){
+                    Toast.makeText(MainActivity.this,"Version: " + value.toString(),Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
@@ -98,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else if(roundCount == 16){
             draw();
         }else{
-            player1Turn = !player1Turn;
+            turno.setValue(!player1Turn);
         }
     }
 
@@ -111,10 +148,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-
+        //firebase
         for (int i = 0; i < 4; i++){
             for (int j = 0; j < 4; j++){
-                DatabaseReference juegoRef = database.getReference("juego/" +  (i+(j*4)));
+                DatabaseReference juegoRef = database.getReference("juego/" +  i + "/" + j);
                 juegoRef.setValue(field[i][j]);
             }
         }
@@ -237,12 +274,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void defineFireBase(){
-        DatabaseReference turno = database.getReference("/turno");
-        turno.setValue("");
 
-        for (int i = 0; i < 16; i++){
-            DatabaseReference juegoRef = database.getReference("juego/" +  i);
-            juegoRef.setValue("");
+        for (int i = 0; i < 4; i++){
+            for (int j = 0; j < 4; j++){
+                DatabaseReference juegoRef = database.getReference("juego/" +  i + "/" + j);
+                juegoRef.setValue("");
+            }
         }
     }
 
@@ -263,13 +300,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 buttons[i][j].setText("");
             }
         }
-
+        //reset firebase
         for (int i = 0; i < 16; i++){
             DatabaseReference juegoRef = database.getReference("juego/" +  i);
             juegoRef.setValue("");
         }
         roundCount=0;
-        player1Turn = true;
+        turno.setValue(true);
     }
 
     private void resetGame(){
@@ -294,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         roundCount = savedInstanceState.getInt("RoundCount");
         player1Points = savedInstanceState.getInt("player1Points");
         player2Points = savedInstanceState.getInt("player2Points");
-        player1Turn = savedInstanceState.getBoolean("player1Turn");
+        turno.setValue(savedInstanceState.getBoolean("player1Turn"));
 
     }
 }
